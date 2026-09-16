@@ -1,0 +1,18 @@
+body {
+    font-family: 'Times New Roman', Times, serif; padding: 20px;
+    background-color: antiquewhite;
+}
+h1{
+    color: black;
+}
+.form-container {
+    margin-bottom: 30px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+}
+input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+}
