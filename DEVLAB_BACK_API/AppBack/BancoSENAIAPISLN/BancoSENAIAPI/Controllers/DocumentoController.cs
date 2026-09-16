@@ -19,9 +19,23 @@ namespace BancoSENAIAPI.Controllers
         [HttpPost("upload/{CodigoCliente}")]
         public async Task<IActionResult> AnexarArquivo(int CodigoCliente, IFormFile arquivo)
         {
+           
             if (arquivo == null || arquivo.Length == 0)
             {
                 return BadRequest("nenhum arquivo foi enviado");
+            }
+            const long tamanhoBytes = 2 * (1024 * 1024);
+            if (arquivo.Length > tamanhoBytes)
+            {
+                return BadRequest(new { mensagem = "O arquivo excede o limite permitido de 2 MB." });
+            }
+
+            string extensao = Path.GetExtension(arquivo.FileName).ToLowerInvariant();
+
+            var extensoesPerm = new[] { ".pdf", ".jpg", ".png" };
+            if (!extensoesPerm.Contains(extensao))
+            {
+                return BadRequest(new {mensagem = $"Extemsão {extensao} inválida. Apenas arquivos .pdf, .jpg e .png são permitidos." });
             }
 
             string pastaCliente = Path.Combine(_caminhoRaiz, CodigoCliente.ToString());
@@ -30,8 +44,6 @@ namespace BancoSENAIAPI.Controllers
             {
                 Directory.CreateDirectory(pastaCliente);
             }
-
-            string extensao = Path.Combine(arquivo.FileName);
 
             string nameOriginal = Path.GetFileNameWithoutExtension(arquivo.FileName);
             string novonome = $"{CodigoCliente}_{nameOriginal}_{Guid.NewGuid()}{extensao}";
@@ -80,6 +92,14 @@ namespace BancoSENAIAPI.Controllers
             if (!System.IO.File.Exists(documento.Caminho))
             {
                 return NotFound(new { mensagem = "O arquivo não foi encontrado no servidor." });
+            }
+
+            var fileInfo = new System.IO.FileInfo(documento.Caminho);
+            long tamanhoBytes = 2 * (1024 * 1024);
+
+            if (fileInfo.Length > tamanhoBytes)
+            {
+                return BadRequest(new { mensagem = "O arquivo excede o limite permitido de 2 MB para download." });
             }
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(documento.Caminho);
