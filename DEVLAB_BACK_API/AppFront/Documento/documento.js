@@ -28,3 +28,46 @@ async function enviarDocumento() {
     }
    
 }
+async function buscarDocumento() {
+
+    const codigoCliente = document.getElementById("buscarCliente").value;
+
+    if (!codigoCliente) {
+        alert("Informe o codigo do cliente");
+        return;
+    }
+
+    const response = await fetch(`${URL_API}/listar/${codigoCliente}`);
+    const documentos = await response.json();
+    const corpo = document.getElementById('corpoTabela');
+    corpo.innerHTML = '';
+
+    documentos.forEach(a => {
+        // Maneira de separar o nome do arquivo com o tipo
+        const nomeCompleto = a.nomeArquivo || a.nome || a.arquivo || `Documento ${a.codigoCliente}`;
+
+        // Includes: corta caracteres especiais do texto | Split: separa o texto com o caracter '.' e o transforma em array | Pop: Retorna apenas o ultimo item do array
+        const extensao = '.' + nomeCompleto.split('.').pop();
+
+        corpo.innerHTML += `
+            <tr>
+                <td>${a.codigoCliente}</td>
+                <td>${nomeCompleto}</td>
+                <td>${extensao}</td>
+                <td>
+                    <button class="btn-editar">Baixar</button>
+                    <button class="btn-excluir" onclick="excluirDocumento(${a.id}, '${nomeCompleto}')">Excluir</button>
+                </td>
+            </tr>`;
+    });
+
+}
+async function excluirDocumento(id, nomeCompleto) {
+    // Caixa de diálogo de confirmação conforme solicitado
+    if (confirm(`Deseja realmente excluir o Documento ${nomeCompleto}?`)) {
+        const response = await fetch(`${URL_API}/excluir/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            buscarDocumento();
+        }
+    }
+}

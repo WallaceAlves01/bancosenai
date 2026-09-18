@@ -5,7 +5,7 @@ body {
 h1{
     color: black;
 }
-.form-container {
+.form-container, .divBuscar {
     margin-bottom: 30px;
     background: #f9f9f9;
     padding: 15px;
@@ -15,4 +15,14 @@ input {
     padding: 8px;
     margin-right: 10px;
     border: 1px solid #ccc;
+}
+.tabela {
+    margin-right: 10px;
+    background-color: white;
+    
+}
+.dentTabela{
+    background-color: darkslateblue;
+    padding: 2000px;
+    color: white;
 }
