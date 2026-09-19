@@ -1,11 +1,12 @@
 body {
-    font-family: 'Times New Roman', Times, serif; padding: 20px;
+    font-family: Arial, sans-serif;
+    padding: 20px;
     background-color: antiquewhite;
 }
 h1{
     color: black;
 }
-.form-container {
+.form-container, .divBuscar {
     margin-bottom: 30px;
     background: #f9f9f9;
     padding: 15px;
@@ -15,4 +16,59 @@ input {
     padding: 8px;
     margin-right: 10px;
     border: 1px solid #ccc;
+}
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    margin-right: 10px;
+    background-color: white;
+}
+
+    .tabela th,
+    .tabela td {
+        padding: 12px 15px; /* 12px em cima/baixo (espaçamento dos nomes), 15px nas laterais */
+        text-align: left;
+        border-bottom: 1px solid #ddd; /* Adiciona uma linha suave separando as linhas */
+        border: 1px solid #ccc;
+    }
+
+.dentTabela{
+    background-color: darkslateblue;
+    color: white;
+}
+
+/*BOTOES*/
+
+#btEnvinar {
+    color: white;
+    background-color: green;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btBusEnvinar {
+    color: white;
+    background-color: dodgerblue;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-editar {
+    color: black;
+    background-color: orange;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-excluir {
+    color: white;
+    background-color: red;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
 }
