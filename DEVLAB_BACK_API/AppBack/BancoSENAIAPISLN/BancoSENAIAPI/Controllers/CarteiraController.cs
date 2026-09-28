@@ -61,6 +61,8 @@ namespace BancoSENAIAPI.Controllers
             carteiraExistente.NomeCarteira = carteiraAtualizada.NomeCarteira;
             carteiraExistente.ApetiteCarteira = carteiraAtualizada.ApetiteCarteira;
 
+            await _context.SaveChangesAsync();
+
             // Retorna Status 204 No Content para atualizações bem-sucedidas [6, 9]
             return NoContent();
         }
@@ -73,6 +75,7 @@ namespace BancoSENAIAPI.Controllers
             if (carteira == null) return NotFound();
 
             _context.Carteira.Remove(carteira);
+            await _context.SaveChangesAsync();
             return Ok(new { message = "Carteira excluída com sucesso." }); // Status 200 [6]
         }
     }
