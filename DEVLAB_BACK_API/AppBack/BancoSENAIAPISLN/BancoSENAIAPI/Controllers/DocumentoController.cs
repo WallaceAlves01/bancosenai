@@ -38,7 +38,7 @@ namespace BancoSENAIAPI.Controllers
                 return BadRequest(new {mensagem = $"Extemsão {extensao} inválida. Apenas arquivos .pdf, .jpg e .png são permitidos." });
             }
 
-            string pastaCliente = Path.Combine(_caminhoRaiz, CodigoCliente.ToString());
+            string pastaCliente = Path.Combine(_caminhoRaiz, CodigoCliente.ToString()); 
 
             if (!Directory.Exists(pastaCliente))
             {
