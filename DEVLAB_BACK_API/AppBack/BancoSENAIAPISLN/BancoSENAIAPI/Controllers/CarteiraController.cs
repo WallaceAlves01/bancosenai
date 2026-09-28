@@ -1,5 +1,8 @@
 ﻿using BancoSENAIAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using BancoSENAIAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace BancoSENAIAPI.Controllers
 {
@@ -7,37 +10,40 @@ namespace BancoSENAIAPI.Controllers
     [Route("api/v2/[controller]")]
     public class CarteiraController : ControllerBase
     {
-        private static List<Carteira> _carteiras = new List<Carteira>
+        private readonly AppDbContext _context;
+
+        public CarteiraController(AppDbContext context)
         {
-            new Carteira { NumeroCarteira = 1, NomeCarteira = "DuduCard", ApetiteCarteira = 1000000 },
-            new Carteira { NumeroCarteira = 2, NomeCarteira = "NicoCard", ApetiteCarteira = 1100000  },
-            new Carteira { NumeroCarteira = 4, NomeCarteira = "WallCard", ApetiteCarteira = 1111000  }
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public IActionResult ListarTodas()
+        public async Task<IActionResult> ListarTodas()
         {
-            return Ok(_carteiras);
+            var carteiras = await _context.Carteira.ToListAsync();
+            return Ok(carteiras);
         }
 
         [HttpPost]
-        public IActionResult Cadastrar([FromBody] Carteira novaCarteira)
+        public async Task<IActionResult> Cadastrar([FromBody] Carteira novaCarteira)
         {
 
-            if (_carteiras.Any(a => a.NumeroCarteira == novaCarteira.NumeroCarteira))
+            if (await _context.Carteira.AnyAsync(a => a.NumeroCarteira == novaCarteira.NumeroCarteira))
                 return BadRequest(new { message = "Este número de carteira já existe." });
             if (novaCarteira.ApetiteCarteira < 0)
                 return BadRequest(new { message = "O valor do apetitecarteira deve ser maior ou igual a zero" });
 
-            _carteiras.Add(novaCarteira);
+            _context.Carteira.Add(novaCarteira);
+
+            await _context.SaveChangesAsync();
             // Retorna Status 201 Created conforme boas práticas REST [6, 8]
             return Created("", novaCarteira);
         }
 
         [HttpGet("{codigo}")]
-        public IActionResult ConsultarPorCodigo(int codigo)
+        public async Task<IActionResult> ConsultarPorCodigo(int codigo)
         {
-            var carteira = _carteiras.FirstOrDefault(a => a.NumeroCarteira == codigo);
+            var carteira = await _context.Carteira.FirstOrDefaultAsync(a => a.NumeroCarteira == codigo);
 
             if (carteira == null)
                 return NotFound(new { message = "Carteira não encontrada." }); // Status 404 [6, 7]
@@ -46,9 +52,9 @@ namespace BancoSENAIAPI.Controllers
         }
 
         [HttpPut("{codigo}")]
-        public IActionResult Alterar(int codigo, [FromBody] Carteira carteiraAtualizada)
+        public async Task<IActionResult> Alterar(int codigo, [FromBody] Carteira carteiraAtualizada)
         {
-            var carteiraExistente = _carteiras.FirstOrDefault(a => a.NumeroCarteira == codigo);
+            var carteiraExistente = await _context.Carteira.FirstOrDefaultAsync(a => a.NumeroCarteira == codigo);
 
             if (carteiraExistente == null) return NotFound();
 
@@ -60,13 +66,13 @@ namespace BancoSENAIAPI.Controllers
         }
 
         [HttpDelete("{codigo}")]
-        public IActionResult Excluir(int codigo)
+        public async Task<IActionResult> Excluir(int codigo)
         {
-            var carteira = _carteiras.FirstOrDefault(a => a.NumeroCarteira == codigo);
+            var carteira = await _context.Carteira.FirstOrDefaultAsync(a => a.NumeroCarteira == codigo);
 
             if (carteira == null) return NotFound();
 
-            _carteiras.Remove(carteira);
+            _context.Carteira.Remove(carteira);
             return Ok(new { message = "Carteira excluída com sucesso." }); // Status 200 [6]
         }
     }
