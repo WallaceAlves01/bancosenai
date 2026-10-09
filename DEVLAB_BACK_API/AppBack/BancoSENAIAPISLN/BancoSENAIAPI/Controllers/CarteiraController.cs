@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using BancoSENAIAPI.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace BancoSENAIAPI.Controllers
 {
     [ApiController]
     [Route("api/v2/[controller]")]
+    [Authorize]
     public class CarteiraController : ControllerBase
     {
         private readonly AppDbContext _context;
